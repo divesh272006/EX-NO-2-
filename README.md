@@ -1,5 +1,5 @@
 ## EX. NO:2 IMPLEMENTATION OF PLAYFAIR CIPHER
-
+DATE:28-10-2026
  
 
 ## AIM:
@@ -35,9 +35,135 @@ STEP-5: Display the obtained cipher text.
 
 
 Program:
-
-
-
-
+```
+#include <stdio.h> 
+#include <string.h> 
+#include <ctype.h> 
+ 
+char key[5][5]; 
+ 
+void createKey(char word[]) 
+{ 
+    int used[26] = {0}; 
+    int i, j, k = 0; 
+    char ch; 
+ 
+    used['j' - 'a'] = 1; 
+ 
+    for (i = 0; word[i] != '\0'; i++) 
+    { 
+        ch = tolower(word[i]); 
+ 
+        if (ch == 'j') 
+            ch = 'i'; 
+ 
+        if (ch >= 'a' && ch <= 'z' && !used[ch - 'a']) 
+        { 
+            key[k / 5][k % 5] = ch; 
+            used[ch - 'a'] = 1; 
+            k++; 
+        } 
+    } 
+ 
+    for (ch = 'a'; ch <= 'z'; ch++) 
+    { 
+        if (!used[ch - 'a']) 
+        { 
+            key[k / 5][k % 5] = ch; 
+            k++; 
+        } 
+    } 
+} 
+ 
+void findPosition(char ch, int *row, int *col) 
+{ 
+    int i, j; 
+ 
+    if (ch == 'j') 
+        ch = 'i'; 
+ 
+    for (i = 0; i < 5; i++) 
+    { 
+        for (j = 0; j < 5; j++) 
+        { 
+            if (key[i][j] == ch) 
+            { 
+                *row = i; 
+                *col = j; 
+                return; 
+            } 
+        } 
+    } 
+} 
+ 
+int main() 
+{ 
+    char word[100], text[100], result[200]; 
+    int i, n = 0, r1, c1, r2, c2; 
+ 
+    printf("Enter key: "); 
+    scanf("%99s", word); 
+ 
+    printf("Enter plain text: "); 
+    scanf("%99s", text); 
+ 
+    createKey(word); 
+ 
+    for (i = 0; text[i] != '\0'; i++) 
+    { 
+        char ch = tolower(text[i]); 
+ 
+        if (ch >= 'a' && ch <= 'z') 
+        { 
+            if (ch == 'j') 
+                ch = 'i'; 
+ 
+            if (n > 0 && result[n - 1] == ch) 
+                result[n++] = 'x'; 
+ 
+            result[n++] = ch; 
+        } 
+    } 
+ 
+    if (n % 2 != 0) 
+        result[n++] = 'x'; 
+ 
+    result[n] = '\0'; 
+ 
+    for (i = 0; i < n; i += 2) 
+    { 
+        findPosition(result[i], &r1, &c1); 
+        findPosition(result[i + 1], &r2, &c2); 
+ 
+        if (r1 == r2) 
+        { 
+            result[i] = key[r1][(c1 + 1) % 5]; 
+            result[i + 1] = key[r2][(c2 + 1) % 5]; 
+        } 
+        else if (c1 == c2) 
+        { 
+            result[i] = key[(r1 + 1) % 5][c1]; 
+            result[i + 1] = key[(r2 + 1) % 5][c2]; 
+        } 
+        else 
+        { 
+            result[i] = key[r1][c2]; 
+            result[i + 1] = key[r2][c1]; 
+        } 
+    } 
+ 
+    printf("Cipher text: %s\n", result); 
+ 
+    return 0; 
+} 
+ 
+```
 
 Output:
+
+<img width="290" height="201" alt="image" src="https://github.com/user-attachments/assets/2c0395ec-626f-4be9-9825-35af5777a2c6" />
+
+Result:  
+
+The Playfair Cipher program is executed successfully, and the cipher text is cpdwkflz. 
+
